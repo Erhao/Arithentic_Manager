@@ -1,0 +1,114 @@
+<html>
+    <head>
+        <title>基础出题系统</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/basicFunc.js"></script>
+        <link rel="stylesheet" href="css/bootstrap.css"/>
+        <link rel="stylesheet" href="css/bootstrap-theme.css"/>
+        <link rel="stylesheet" href="css/basicCss.css"/>
+    </head>
+    <body style="margin: 0; padding: 0;">
+        <div class="col-lg-1 col-md-1 "></div>
+        <div class="main col-lg-12 col-md-12">
+            <div class="operate col-lg-12 col-md-12" id="top" ><!-- 用户输入&操作 -->
+                <form enctype="multipart/form-data">
+                    <div class="alert alert-info">
+                        <p style="text-align: center;">我要做
+                            <input type="text" id="scope-min" class="input-sm" value="0">
+                            到
+                            <input type="text" id="scope-max" class="input-sm" value="100">
+                            的算术题
+                        </p>
+                    </div>
+                    <div class="alert alert-info">
+                        <p style="text-align: center;">选择算式的运算类型:
+                            <input type="checkbox" style="margin-left: 30px;" name="operator" value="+" checked="checked">+
+                            <input type="checkbox" style="margin-left: 30px;" name="operator" value="-">-
+                            <input type="checkbox" style="margin-left: 30px;" name="operator" value="*">*
+                            <input type="checkbox" style="margin-left: 30px;" name="operator" value="/">/
+                        </p>
+                    </div>
+                    <div class="alert alert-info">
+                        <p style="text-align: center;">每次出
+                            <input type="text" value="50"  class="input-sm" id="equationCounts">
+                            道题
+                        </p>
+                    </div>
+                    <!--<input type="button" id="statGraphBtn" value="统计图" onclick="">-->
+                    <!--<input type="file" id="importFromCsvBtn" accept="text/csv" name="file">-->
+                    <!--<input type="button" id="temp" onclick="printEquation();" value="检查printEquation响应">--> 
+                </form>
+            </div><!-- 用户输入 -->
+
+            <div class="col-lg-12 col-md-12 col-sm-12"><!-- 管理员操作区 -->
+                <div class="col-lg-6 col-md-6 col-sm-12" style="text-align: center;">
+                    <div>
+                        <form method="post" action="" enctype="multipart/form-data">
+                            <input type="button" id="printEquationsBtn" class="btn btn-primary" value="生成算式" onclick="printEquation();"/>
+                            <input type="button" id="checkEquationsBtn" class="btn btn-warning" value="检查对错" onclick="checkEquation();"/>
+                            <input type="button" id="saveToCsvBtn" class="btn btn-success" value="导出CSV" onclick="saveToCsv();"/>
+                            <input type="button" id="exportToWordBtn" class="btn btn-success" value="保存至Word" onclick="saveToWord();"/>
+                            <input type="button" id="importCsvBtn" class="btn btn-success" value="导入CSV" onclick="showImportArea()"/> 
+                        </form>
+                    </div>
+                    <div id="importCsvArea"  class="col-lg-12 col-md-12 col-sm-12" style="display: none;">
+                        <input type="file" id="csvFile" accept=".csv">
+                        <input type="button" class="btn btn-success" value="解析CSV文件" onclick="analCsv();">
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12" style="text-align: center;">
+                    <div id="adminLogin" class="col-lg-10 col-md-10 col-sm-12">
+                        <input type="button" class="btn btn-danger" value="管理员登陆" onclick="login();">
+                    </div>
+                    <div id="adminLogout" style="display: none;" class="col-lg-10 col-md-10 col-sm-12">
+                        <input type="button" class="btn btn-danger" value="管理员退出" onclick="logout();">
+                        <input type="button" id="showAnswerBtn" class="btn btn-sm" value="显示答案" onclick="showAnswers();"/>
+                        <input type="button" id="hideAnswerBtn" class="btn btn-sm" value="隐藏答案" onclick="showAnswers();" style="display: none;"/>
+                        <input type="button" id="alterPassBtn" class="btn btn-sm" value="修改密码" onclick="showAlterArea();"/>
+                    </div>
+                    <div id="register" class="col-lg-2 col-md-2 col-sm-12"><!-- 重新注册管理员信息 -->
+                        <input type="button" class="btn btn-sm" value="重新注册" onclick="register();"/>
+                    </div>
+                    <div id="loginArea" class="col-lg-10 col-md-10 col-sm-12" style="display: none;">
+                        <form>
+                            <label>ID:</label>
+                            <input id="adminId" class="input-sm" type="text" placeholder="请输入账号"/><br/>
+                            <label>密码:</label>
+                            <input id="adminPass" class="input-sm" type="password" placeholder="请输入密码"/><br/>
+                            <input type="button" value="登陆" onclick="checkAdmin();"> 
+                        </form>
+                    </div>
+                    <div id="alterArea" class="col-lg-6 col-md-4 col-sm-12" style="display: none;">
+                        <form>
+                            <br/>
+                            <label>修改密码:</label>
+                            <input id="newPass" class="input-sm" type="password" placeholder="请输入新密码"/><br/><br/>
+                            <p style="font-size: 10px;">每天有两次修改机会，当前还剩余<span id="alterTimesLeft"></span>次</p>
+                            <input id="alterBtn" type="button" value="提交修改" onclick="alterPass();"> 
+                        </form>
+                    </div>
+                </div>
+                <div id="feedback" class="alert alert-warning col-lg-12 col-md-12 col-sm-12" style="text-align: center;"></div>
+                <div id="mySignature" class="panel panel-default" style="position: fixed; right: 40px; top: 50px;"><!-- 签名区 -->
+                    <div class="panel-heading"><h3 class="panel-title">作者信息</h3></div>
+                    <table style="text-align: center;">
+                        <tr><td>2015级开源2班</td></tr>
+                        <tr><td>张新宇</td></tr>
+                        <tr><td>201540704828</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <!--输出区-->
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div id="isImport" class="col-lg-12 col-md-12 col-sm-12" style="text-align: center;"></div>
+                <div id="outputarea" style="width: 600px; margin: 0 auto;"></div>
+                <div id="upBtn" style="position: fixed; left: 50px; bottom: 50px;"></div>
+                <div id="footer" style="text-align: center;"></div>
+            </div>
+        </div>
+        <div class="col-lg-1 col-md-1"></div>
+    </body>
+</html>
